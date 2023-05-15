@@ -1,0 +1,36 @@
+---
+- name: Install php
+  hosts: webservers
+  become: yes
+  tasks:
+
+    - name: Install php on redhat
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - scl-utils
+        - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        - https://rpms.remirepo.net/enterprise/remi-release-7.rpm
+        - php74 
+        - php74-php-fpm
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: Make sure php-fpm service is running on redhat
+      service:
+        name: php74-php-fpm
+        state: started
+        enabled: yes
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: Install php on ubuntu
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php7.4
+        - php7.4-fpm
+      when:
+        ansible_os_family == "Debian"

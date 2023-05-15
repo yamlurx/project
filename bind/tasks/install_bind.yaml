@@ -1,0 +1,33 @@
+---
+- name: Install bind
+  hosts: ansible
+  become: yes
+
+  tasks:
+
+  - name: Install bind on Ubuntu
+    apt:
+      name: bind9
+      state: present
+    when: ansible_os_family == 'Debian'
+
+  - name: Copy zone configuration files
+    copy:
+      src: "{{ item }}"
+      dest: "/etc/bind/zones/"
+    with_items:
+      - "../templates/project.inside"
+      - "../templates/project.outside"
+
+  - name: Copy bind configuration files
+    copy:
+      src: "{{ item }}"
+      dest: "/etc/bind/"
+    with_items:
+      - "../templates/named.conf.local"
+      - "../templates/named.conf.options"
+
+  - name: Restart dns-server named
+    service:
+      name: named
+      state: restarted

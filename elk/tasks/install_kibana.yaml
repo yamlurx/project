@@ -1,0 +1,29 @@
+---
+- name: Install kibana
+  hosts: elk-server
+  become: yes
+  tasks:
+
+  - name: install kibana
+    apt:
+      deb: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/k/kibana/kibana-7.17.1-amd64.deb
+      state: present
+    when:
+      ansible_os_family == "Debian"
+
+  - name: configure kibana.yml file for network
+    lineinfile:
+      line: "{{ item.line }}"
+      regexp: "{{ item.regexp }}"
+      path: "/etc/kibana/kibana.yml"
+    loop:
+      - regexp: '^#server.host:.*'
+        line: 'server.host: "0.0.0.0"'
+      - regexp: '^#elasticsearch.hosts:.*'
+        line: 'elasticsearch.hosts: ["http://127.0.0.1:9200"]'
+
+  - name: ensure service kibana is enabled and running
+    service:
+      name: kibana
+      state: started
+      enabled: yes

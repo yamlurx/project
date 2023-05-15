@@ -1,0 +1,54 @@
+---
+
+- hosts: mail
+  become: yes
+
+  tasks:
+
+  - name: Include vars
+    include_vars:
+      file: "/etc/ansible/vars/main.yml"
+
+  - name: Set postfix option hostname for ubuntu
+    debconf: 
+      name: postifx 
+      question: "postfix/mailname" 
+      value: "{{ mail_host }}" 
+      vtype: "string"
+    when:
+      ansible_os_family == "Debian"
+
+  - name: Set postfix option type as internet site for ubuntu
+    debconf: 
+      name: postfix 
+      question: "postfix/main_mailer_type" 
+      value: "'Internet Site'" 
+      vtype: "string"
+    when:
+      ansible_os_family == "Debian"
+
+  - name: Install postfix on ubuntu
+    apt: 
+      name: postfix 
+      state: present
+    when:
+      ansible_os_family == "Debian"
+
+  - name: Install postfix on redhat
+    yum:
+      name: postfix
+      state: present
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: Install dovecot on ubuntu
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - dovecot-core
+      - dovecot-imapd
+      - dovecot-pop3d
+      - dovecot-lmtpd
+    when:
+      ansible_os_family == "Debian"

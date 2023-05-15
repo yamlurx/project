@@ -1,0 +1,20 @@
+$TTL 14400
+
+158.160.23.111.nip.io.     IN      SOA     ns1.158.160.23.111.nip.io. admin.158.160.23.111.nip.io. (
+        2023050901      ; Serial
+        10800           ; Refresh
+        3600            ; Retry
+        604800          ; Expire
+        604800          ; Negative Cache TTL
+)
+
+                IN      NS      ns1.158.160.23.111.nip.io.
+                IN      NS      ns2.158.160.23.111.nip.io.
+
+                IN      MX  10  mail.158.160.23.111.nip.io.
+
+@               IN      A       158.160.23.111
+ns1             IN      A       158.160.23.111
+ns2             IN      A       158.160.23.111
+mail            IN      A       158.160.23.111
+www             IN      CNAME   158.160.23.111.nip.io.

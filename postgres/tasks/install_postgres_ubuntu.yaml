@@ -1,0 +1,44 @@
+---
+- name: Install postgres
+  hosts: elk-server
+  become: yes
+  tasks:
+
+    - name: Add PostgreSQL apt-key
+      apt_key:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        state: present
+      when:
+        ansible_os_family == "Debian"
+
+    - name: Add PostgreSQL repository into sources list
+      apt_repository:
+        repo:  deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main
+        state: present
+        filename: postgresql
+      when:
+        ansible_os_family == "Debian"
+
+    - name: Update repositories cache and install PostgreSQL 12
+      apt:
+        pkg:
+          - postgresql-12
+        update_cache: yes
+      when:
+        ansible_os_family == "Debian"
+
+    - name: Copy hba configuration files
+      copy:
+        src: "../templates/pg_hba.conf"
+        dest: "/etc/postgresql/12/main/"
+      when:
+        ansible_os_family == "Debian"
+
+    - name: Restart PostgreSQL
+      service:
+        name: postgresql@12-main
+        state: restarted
+        enabled: yes
+      become: yes
+      when:
+        ansible_os_family == "Debian"
