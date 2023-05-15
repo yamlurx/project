@@ -1,0 +1,26 @@
+---
+
+- hosts: elk-server
+  become: yes
+
+  vars:
+    kibana_server_ip: 158.160.23.111
+
+  tasks:
+
+  - name: add a elascticsearch address to the filebeat-config
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      insertafter: "output.elasticsearch:"
+      line: '  hosts: ["{{ kibana_server_ip }}:9200"]'
+      firstmatch: yes
+      state: present
+
+  - name: add a elascticsearch address to the filebeat-config
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      regexp: '{{ item.search | regex_escape() }}$'
+      line: '{{ item.replace }}'
+      state: present
+    with_items:
+      - { search: '  hosts: ["localhost:9200"]', replace: '  # hosts: ["localhost:9200"]' }

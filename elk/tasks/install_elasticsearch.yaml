@@ -1,0 +1,59 @@
+---
+- name: Install elasticsearch
+  hosts: elk-server
+  become: yes
+  tasks:
+
+  - name: Install packages before installing elasticsearch
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - apt-transport-https
+      - openjdk-11-jre-headless
+    when: ansible_os_family == 'Debian'
+
+  - name: install elasticsearch
+    apt:
+      deb: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/e/elasticsearch/elasticsearch-7.17.1-amd64.deb
+      state: present
+    when:
+      ansible_os_family == "Debian"
+
+  - name: reload systemd config
+    systemd:
+      daemon_reload=yes
+
+  - name: set max JVM heap size
+    lineinfile:
+      line: "{{ item.line }}"
+      regexp: "{{ item.regexp }}"
+      path: "/etc/elasticsearch/jvm.options"
+    loop:
+      - regexp: "^## -Xms4g"
+        line: "-Xms1g"
+      - regexp: "^## -Xmx4g"
+        line: "-Xmx1g"
+
+  - name: configure elasticsearch.yml file for network
+    lineinfile:
+      line: "{{ item.line }}"
+      regexp: "{{ item.regexp }}"
+      path: "/etc/elasticsearch/elasticsearch.yml"
+    loop:
+      - regexp: '^#network.host:.*'
+        line: "network.host: 0.0.0.0"
+      - regexp: '#discovery.seed_hosts:.*'
+        line: "discovery.seed_hosts: []"
+
+  - name: configure elasticsearch.yml file xpack-options
+    lineinfile:
+      path: "/etc/elasticsearch/elasticsearch.yml"
+      line: "xpack.security.enabled: false"
+      insertbefore: EOF
+
+  - name: ensure service elasticsearch is enabled and running
+    service:
+      name: elasticsearch
+      state: started
+      enabled: yes

@@ -1,0 +1,46 @@
+---
+- name: Install postgres
+  hosts: dbservers
+  become: yes
+  tasks:
+
+    - name: Install repo PostgreSQL for redhat
+      yum:
+        name: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+        state: present
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: Install package PostgreSQL 12 for redhat
+      yum:
+        name=postgresql12-server
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: Ensure PostgreSQL database is initialized
+      command: /usr/pgsql-12/bin/postgresql-12-setup initdb
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: "Make sure the PostgreSQL service is running"
+      service:
+        name: postgresql-12
+        state: started
+        enabled: yes
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: Copy hba configuration file
+      copy:
+        src: "../templates/pg_hba.conf"
+        dest: "/var/lib/pgsql/12/data/"
+      when:
+        ansible_os_family == "RedHat"
+
+    - name: Restart PostgreSQL
+      service:
+        name: postgresql-12
+        state: restarted
+        enabled: yes
+      when:
+        ansible_os_family == "RedHat"

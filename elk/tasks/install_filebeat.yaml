@@ -1,0 +1,60 @@
+---
+
+- hosts: servers
+  become: yes
+
+  tasks:
+
+  - name: Include vars
+    include_vars:
+      file: "/etc/ansible/vars/main.yml"
+
+  - name: Install filebeat for ubuntu
+    apt:
+      deb: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/f/filebeat/filebeat-7.17.1-amd64.deb
+      state: present
+    when:
+      ansible_os_family == "Debian"
+
+  - name: Install filebeat for redhat
+    yum:
+      name: https://www.techplanet.pro/d/filebeat-7.17.1-x86_64.rpm
+      state: present
+    when:
+      ansible_os_family == "RedHat"
+
+  - name: Add a kibana address to the filebeat-config
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      insertafter: "setup.kibana:"
+      line: '  host: "{{ elk_server_ip }}:5601"'
+      firstmatch: yes
+      state: present
+      backup: yes
+
+  - name: Add a elascticsearch address to the filebeat-config
+    lineinfile:
+      path: /etc/filebeat/filebeat.yml
+      regexp: '{{ item.search | regex_escape() }}$'
+      line: '{{ item.replace }}'
+      state: present
+      firstmatch: yes
+    with_items:
+      - { search: '  hosts: ["localhost:9200"]', replace: '  hosts: ["{{ elk_server_ip }}:9200"]' }
+
+  - name: Make filebeat service is running and enabled
+    service:
+      name: filebeat
+      state: started
+      enabled: yes
+
+  - name: Enable module nginx
+    command: filebeat modules enable nginx
+
+  - name: Installation of necessary components
+    command: filebeat setup
+
+  - name: Restart filebeat
+    service:
+      name: filebeat
+      state: restarted
