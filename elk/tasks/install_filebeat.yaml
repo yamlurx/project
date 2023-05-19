@@ -11,7 +11,7 @@
 
   - name: Install filebeat for ubuntu
     apt:
-      deb: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/f/filebeat/filebeat-7.17.1-amd64.deb
+      deb: https://mirror.yandex.ru/mirrors/elastic/7/pool/main/e/elasticsearch/elasticsearch-7.17.7-amd64.deb
       state: present
     when:
       ansible_os_family == "Debian"
