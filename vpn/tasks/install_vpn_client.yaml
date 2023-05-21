@@ -1,0 +1,28 @@
+---
+- name: Install openvpn client
+  hosts: openvpn_clients
+  become: yes
+  tasks:
+
+  - name: Install OpenVPN and openvpn-systemd-resolved on ubuntu
+    apt:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - openvpn
+      - openvpn-systemd-resolved
+    when: ansible_os_family == 'Debian'
+
+  - name: Copy OpenVPN client configuration file
+    template:
+      src: "/etc/openvpn/client/{{ ansible_hostname }}/{{ ansible_hostname }}.conf"
+      dest: "/etc/openvpn/{{ ansible_hostname }}.conf"
+    when: ansible_os_family == 'Debian'
+
+  - name: Start OpenVPN client
+    service:
+      name: "openvpn@{{ ansible_hostname }}"
+      state: started
+      enabled: yes
+    ignore_errors: yes
+    when: ansible_os_family == 'Debian'
