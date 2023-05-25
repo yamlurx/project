@@ -1,6 +1,6 @@
 ---
 
-zabbix_server_ip : 10.129.0.11
-elk_server_ip : 158.160.23.111
+zabbix_server_ip : 10.1.1.1
+elk_server_ip : 10.1.1.10
 kibana_url : kibana.158.160.23.111.nip.io
 mail_host : 158.160.23.111.nip.io

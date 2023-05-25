@@ -1,0 +1,13 @@
+$TTL 14400
+
+23.160.158.in-addr.arpa. IN SOA ns1.158.160.23.111.nip.io. admin.158.160.23.111.nip.io. (
+        2023052103      ; Serial
+        10800           ; Refresh
+        3600            ; Retry
+        604800          ; Expire
+        604800          ; Negative Cache TTL
+)
+23.160.158.in-addr.arpa. IN NS ns1.158.160.23.111.nip.io.
+23.160.158.in-addr.arpa. IN NS ns2.158.160.23.111.nip.io.
+
+111.23.160.158.in-addr.arpa. IN PTR mail.158.160.23.111.nip.io.

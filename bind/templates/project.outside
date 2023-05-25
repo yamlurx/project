@@ -1,7 +1,7 @@
 $TTL 14400
 
 158.160.23.111.nip.io.     IN      SOA     ns1.158.160.23.111.nip.io. admin.158.160.23.111.nip.io. (
-        2023050901      ; Serial
+        2023052101      ; Serial
         10800           ; Refresh
         3600            ; Retry
         604800          ; Expire

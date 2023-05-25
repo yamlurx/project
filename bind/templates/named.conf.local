@@ -1,15 +1,23 @@
-zone "project.inside" {
-type master;
-file "/etc/bind/zones/project.inside";
-allow-query { 10.1.1.0/24; 10.129.0.26; localhost; };
-allow-transfer { none; };
-allow-update { none; };
-};
-
 zone "158.160.23.111.nip.io" {
 type master;
 file "/etc/bind/zones/project.outside";
 allow-query { any; };
+allow-transfer { none; };
+allow-update { none; };
+};
+
+zone "23.160.158.in-addr.arpa" {
+type master;
+file "/etc/bind/zones/project.reverse";
+allow-query { any; };
+allow-transfer { none; };
+allow-update { none; };
+};
+
+zone "project.inside" {
+type master;
+file "/etc/bind/zones/project.inside";
+allow-query { 10.1.1.0/24; 10.129.0.19; localhost; };
 allow-transfer { none; };
 allow-update { none; };
 };
