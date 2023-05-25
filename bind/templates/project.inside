@@ -1,7 +1,7 @@
 $TTL 1800
 
 project.inside.     IN      SOA     ns1.project.inside. admin.project.inside. (
-        2023050902      ; Serial
+        2023052201      ; Serial
         10800           ; Refresh
         3600            ; Retry
         604800          ; Expire
@@ -15,4 +15,4 @@ ns1             IN      A       10.1.1.6
 ns2             IN      A       10.1.1.6
 vpn-mon         IN      A       10.1.1.1
 dns-web         IN      A       10.1.1.6
-elk-db          IN      A       10.1.1.14
+elk-db          IN      A       10.1.1.10

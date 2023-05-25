@@ -18,6 +18,7 @@
     with_items:
       - "../templates/project.inside"
       - "../templates/project.outside"
+      - "../templates/project.reverse"
 
   - name: Copy bind configuration files
     copy:

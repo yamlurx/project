@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: zabbix-agent
   become: yes
 
   tasks:

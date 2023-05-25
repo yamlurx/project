@@ -8,7 +8,7 @@ options {
 
         dnssec-validation auto;
 
-        listen-on-v6 { none; };
         listen-on port 53 { any; };
-        allow-recursion { 10.1.1.0/24; 10.129.0.26; localhost; };
+        listen-on-v6 { none; };
+        allow-recursion { 10.1.1.0/24; 10.129.0.19; localhost; };
 };
